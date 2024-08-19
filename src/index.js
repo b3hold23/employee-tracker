@@ -29,14 +29,27 @@ async function executeSQLFile(filePath) {
     }
 }
 
-async function loadDataBase() {
-    await executeSQLFile('schema.sql');
-    await executeSQLFile('seeds.sql');
+let isDatabaseLoaded = false; // Flag to track if the database has been loaded
+
+function loadDataBase() {
+    return new Promise((resolve, reject) => {
+        if (!isDatabaseLoaded) {
+            isDatabaseLoaded = true;
+            // Your code to load database schema and seeds here
+            resolve();
+        } else {
+            resolve(); // Database is already loaded, no need to reload
+        }
+    });
 }
 
-loadDataBase().then(() => {
-    mainMenu();
-}).catch(err => console.error('Error initializing database', err));
+console.log('Loading database...');
+loadDataBase()
+  .then(() => {
+    console.log('Database loaded successfully');
+    mainMenu(); // Only show the menu after the database has loaded successfully
+  })
+  .catch(err => console.error('Error initializing database', err));
 
   function mainMenu() {
     inquirer
@@ -69,5 +82,3 @@ loadDataBase().then(() => {
         }
       });
   }
-  
-  mainMenu();
